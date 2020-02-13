@@ -20,7 +20,7 @@ pipeline {
         stage('Building image') {
             steps{
                 script {
-                    dockerImage = docker.build registryurl + ":$BUILD_NUMBER"
+                    dockerImage = docker.build registryurl + ":v$TAG"
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline {
         }
         stage('Remove Unused docker image') {
             steps{
-                sh "docker rmi $registryurl:$BUILD_NUMBER"
+                sh "docker rmi $registryurl:v$TAG"
             }
         }
     }
@@ -43,11 +43,11 @@ pipeline {
     // slack notification  
     post {
         success {
-            slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.TAG}]' (${env.BUILD_URL})")
 
         }
         failure {
-            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.TAG}]' (${env.BUILD_URL})")
         } 
     }        
          
